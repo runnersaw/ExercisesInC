@@ -9,7 +9,7 @@ My personal learning goals were to inspect advanced exploitation techniques for 
 
 One of our major shortcomings was a lack of information sharing about exploits and vulnerabilities that we found individually. We need to find a framework for sharing information with each other. We have some ideas, such as code and write-up reviews with each other. As we work on more and more advanced techniques, we will likely move to a structure in which we are working at the same time on a bug or exploitation technique.
 
-#### For Reflection 1, you should focus on the process of Sprint 1 after Reflection 0. How did your team follow or adapt the eduScrum ceremonies? How did your work prepare you for the sprint review, and in what ways were you unprepared? How did your activity throughout the sprint change from what you expected at the beginning as you worked toward your project proposal?
+#### EduScrum Reflection
 
 We were unprepared because we did not meet before the sprint review in person and make sure that we were on the same page. We should do a stand-up (in-person or online) each day in order to make sure that we have a coherent plan in order to prepare for sprint reviews.
 
@@ -17,7 +17,7 @@ We did a good job of using our Trello board as a good organization for our sprin
 
 We have a pretty informal stand-up at the beginning of every meeting. We also do one at the end of every meeting that is forward-looking and makes sure that we know what tasks each of us will be working on before the next class. 
 
-## Links to Head First C exercises
+## Head First C exercises
 
 I only completed Head First C chapter one exercise 1 in this sprint. I feel very confident in my knowledge of C, so I prioritized researching and investigating future project work in order to ensure the viability of this moving forward. I plan on catching up to where the class should be by the end of sprint 2. [The first homework can be found here](https://github.com/runnersaw/SoftwareSystems/tree/master/hw01).
 
