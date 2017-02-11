@@ -140,22 +140,35 @@ Their difference is 0x20, which is actually 32. There is more space between them
 
 ### Files and file systems
 
-1) What abstractions do file systems provide?  Give an example of something that is logically
-true about files systems but not true of their implementations.
+1) What abstractions do file systems provide?  Give an example of something that is logically true about files systems but not true of their implementations.
+
+They provide the abstraction that file systems are actually a dictionary from strings to bytes. The actual implementations obviously need to do work to translate the string into the memory address, and they have to do work to read or write from blocks in such a way that it abstracts away the blocks and pretends that everything is bytes.
 
 2) What information do you imagine is stored in an `OpenFileTableEntry`?
 
+- Current memory address
+- File name
+- Read/write mode
+
 3) What are some of the ways operating systems deal with the relatively slow performance of persistent storage?
 
-4) Suppose your program writes a file and prints a message indicating that it is done writing.
-Then a power cut crashes your computer.  After you restore power and reboot the computer, you find that the
-file you wrote is not there.  What happened?
+Operating systems can switch to other processes while it is waiting for an I/O operation to finish. It can also pre-load blocks for you based on heuristics (such as loading the next block after the one you're currently looking at). It only performs writes when the file is closed or the processor has idle time to write it.
+
+4) Suppose your program writes a file and prints a message indicating that it is done writing.Then a power cut crashes your computer.  After you restore power and reboot the computer, you find that the file you wrote is not there.  What happened?
+
+It is possible that the write only wrote to a buffer, and the operating system had not yet completed the work of writing that buffer to the disk.
 
 5) Can you think of one advantage of a File Allocation Table over a UNIX inode?  Or an advantage of a inode over a FAT?
 
+The FAT implementation seems like a linked list, so it is probably generally easy to insert or delete or move pieces of memory, but that means that reading farther into the file might take longer, since you have to traverse a linked list. 
+
 6) What is overhead?  What is fragmentation?
 
+Overhead is the amount of space used to keep track of current allocations. Fragmentation is when some blocks are left unused or are only partially used.
+
 7) Why is the "everything is a file" principle a good idea?  Why might it be a bad idea?
+
+It makes it easy for processes to interface with each other, as it is defined that they will both take and output a stream of bytes. This could be a bad idea maybe if the abstraction means that the operating system has to do more work to provide that abstraction.
 
 If you would like to learn more about file systems, a good next step is to learn about journaling file systems.
 Start with [this Wikipedia article](https://en.wikipedia.org/wiki/Journaling_file_system), then
