@@ -42,13 +42,23 @@ Reading or writing to an incorrect location in memory.
 
 1) Give a real-world example of virtualization (ideally not one of the ones in the book).
 
+Video game emulation is an example of virtualization. For example, I have an emulator for an old Playstation on my system that uses virtualization.
+
 2) What is the difference between a program and a process?
+
+A process is an object that represents a running program. It contains information about what to run and the current state of the program. Multiple processes can be used to run one program, in which case they share program text, but each have independent states. It is also possible for one program to run multiple processes.
 
 3) What is the primary purpose of the process abstraction?  What illusion does the process abstraction create?
 
+The process abstraction creates the illusion that the process is running in its own space and doesn't have to worry about interfering with or getting interfered with by any other process. 
+
 4) What is the kernel?
 
+The kernel is the part of the operating system that handles core capabilities and maintains the abstractions for the rest of the software.
+
 5) What is a daemon?
+
+A daemon is a process that runs in the background.
 
 
 ## Chapter 3
@@ -58,52 +68,107 @@ Reading or writing to an incorrect location in memory.
 
 1) The Georgian alphabet has 33 letters.  How many bit are needed to specify a letter?
 
+6 bits.
+
 2) In the UTF-16 character encoding, the binary representation of a character can take up to 32 bits.
 Ignoring the details of the encoding scheme, how many different characters can be represented?
 
+4 GiB
+
 3) What is the difference between "memory" and "storage" as defined in Think OS?
+
+Memory is volatile, which means that it goes away when the computer is shut off. Storage persists even between machine restarts.
 
 4) What is the difference between a GiB and a GB?  What is the percentage difference in their sizes?
 
+A GiB is 2^30, and a GB is 1,000,000,000. These are different by 7.4%.
+
 5) How does the virtual memory system help isolate processes from each other?
+
+The operating system maps virtual memory on a per-process basis, so even if two processes tried to access the same virtual address, they would each get their own physical address.
 
 6) Why do you think the stack and the heap are usually located at opposite ends of the address space?
 
+This is probably to make it easier for the operating system to keep track of them and keep them separate so that they don't override or overlap with each other.
+
 7) What Python data structure would you use to represent a sparse array?
+
+A dictionary.
 
 8) What is a context switch?
 
+When the operating system pauses a process, and begins to run another process.
+
 In this directory, you should find a subdirectory named `aspace` that contains `aspace.c`.  Run it on your computer and compare your results to mine.
+
+```
+Address of main is 0x40057d
+Address of global is 0x60104c
+Address of local is 0x7ffc2a19b884
+Address of p is 0x1ad1010
+```
 
 1) Add a second call to `malloc` and check whether the heap on your system grows up (toward larger addresses).
 
 2) Add a function that prints the address of a local variable, and check whether the stack grows down.
 
+q is a new pointer to memory that is allocated with `malloc` after p. l is a new local that is allocated after local. You can see that q has a higher memory address that p, which means that the heap grows up. l has a higher address than local, which seems weird to me. I though that the stack grows down, so I would expect l to have a lower address than local
+
+```
+Address of main is 0x40057d
+Address of global is 0x60104c
+Address of local is 0x7fff78a9bb88
+Address of l is 0x7fff78a9bb8c
+Address of p is 0x1a5a010
+Address of q is 0x1a5a0a0
+```
+
 3) Choose a random number between 1 and 32, and allocate two chunks with that size.
 How much space is there between them?  Hint: Google knows how to subtract hexadecimal numbers.
 
+I picked 24 and got:
+
+```
+Address of p is 0x79b010
+Address of q is 0x79b030
+```
+
+Their difference is 0x20, which is actually 32. There is more space between them than 24.
 
 ## Chapter 4
 
 
 ### Files and file systems
 
-1) What abstractions do file systems provide?  Give an example of something that is logically
-true about files systems but not true of their implementations.
+1) What abstractions do file systems provide?  Give an example of something that is logically true about files systems but not true of their implementations.
+
+They provide the abstraction that file systems are actually a dictionary from strings to bytes. The actual implementations obviously need to do work to translate the string into the memory address, and they have to do work to read or write from blocks in such a way that it abstracts away the blocks and pretends that everything is bytes.
 
 2) What information do you imagine is stored in an `OpenFileTableEntry`?
 
+- Current memory address
+- File name
+- Read/write mode
+
 3) What are some of the ways operating systems deal with the relatively slow performance of persistent storage?
 
-4) Suppose your program writes a file and prints a message indicating that it is done writing.
-Then a power cut crashes your computer.  After you restore power and reboot the computer, you find that the
-file you wrote is not there.  What happened?
+Operating systems can switch to other processes while it is waiting for an I/O operation to finish. It can also pre-load blocks for you based on heuristics (such as loading the next block after the one you're currently looking at). It only performs writes when the file is closed or the processor has idle time to write it.
+
+4) Suppose your program writes a file and prints a message indicating that it is done writing.Then a power cut crashes your computer.  After you restore power and reboot the computer, you find that the file you wrote is not there.  What happened?
+
+It is possible that the write only wrote to a buffer, and the operating system had not yet completed the work of writing that buffer to the disk.
 
 5) Can you think of one advantage of a File Allocation Table over a UNIX inode?  Or an advantage of a inode over a FAT?
 
+The FAT implementation seems like a linked list, so it is probably generally easy to insert or delete or move pieces of memory, but that means that reading farther into the file might take longer, since you have to traverse a linked list. 
+
 6) What is overhead?  What is fragmentation?
 
+Overhead is the amount of space used to keep track of current allocations. Fragmentation is when some blocks are left unused or are only partially used.
+
 7) Why is the "everything is a file" principle a good idea?  Why might it be a bad idea?
+
+It makes it easy for processes to interface with each other, as it is defined that they will both take and output a stream of bytes. This could be a bad idea maybe if the abstraction means that the operating system has to do more work to provide that abstraction.
 
 If you would like to learn more about file systems, a good next step is to learn about journaling file systems.
 Start with [this Wikipedia article](https://en.wikipedia.org/wiki/Journaling_file_system), then
