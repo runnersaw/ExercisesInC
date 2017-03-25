@@ -1,4 +1,16 @@
 
+/*
+Duplicating the UNIX utility 'tee'
+This program will read from stdin, and write to both stdout
+and the file specified. You can specify if the file should
+be appended to or overwritted. Example usage:
+
+echo "hi" | tee hello.txt
+echo "appended" | tee hello.txt
+
+Author: Sawyer Vaughan
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
