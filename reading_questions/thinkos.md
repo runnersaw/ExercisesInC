@@ -288,16 +288,28 @@ If you want to know more about how malloc works, read
 
 1) What happens if a program writes a new value into the program counter?
 
+The program will execute the line of code at that new value on the next instruction cycle.
+
 2) What is the fundamental problem caches are meant to solve?
+
+Reading from memory is relatively slow compared to CPU speed, so we don't want to spend 90% of our time waiting for a read from disk, so we use faster, smaller amounts of memory to reduce wait time.
 
 3) If cache access time is 1 ns and memory access time is 10 ns, what is the average
 access time of a program with hit rate 50%?  How about 90%?
+
+average access time 50% = .5ns + 5ns = 5.5ns
+
+average access time 90% = .9ns + 1ns = 1.9ns
 
 4) The book gives several examples of programming language features, like loops, that tend
 to improve locality in the access pattern of instructions and/or data.  Can you think of other examples?
 Or counter-examples that might decrease locality?
 
+Arrays are the biggest example of locality. Other language features could be like placing values on the stack near each other or having dynamic memory that was allocated near in time be allocated near each other in space.
+
 5)  If you refactor a program to improve locality, would you say the program is "cache aware"?  Why not?
+
+No. A program is cache-aware if it modifies it's execution based on the specifics of the size and speed of the cache.
 
 6) See if you can estimate the cost of a memory cache by comparing the prices of two similar CPUs with
 different cache sizes.
