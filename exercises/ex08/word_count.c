@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <glib.h>
 
-#define MAX_SIZE 100000
 #define NUM_TO_PRINT 50
 
 typedef struct wordFrequency {
@@ -42,11 +41,20 @@ int main(int argc, char** argv) {
     }
 
     char *fname = argv[1];
-    gchar **contents = malloc(MAX_SIZE);
-    g_file_get_contents(fname,
+    gchar **contents = malloc(sizeof(char **));
+    GError **err = malloc(sizeof(GError **));
+    gboolean success = g_file_get_contents(fname,
         contents,
         NULL,
-        NULL);
+        err);
+
+    if (!success) {
+        if (*err != NULL) {
+            GError *error = *err;
+            printf("%s\n", error->message);
+        }
+        return -1;
+    }
 
     gchar *file_contents = *contents;
 
