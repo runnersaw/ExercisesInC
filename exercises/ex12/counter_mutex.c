@@ -80,6 +80,7 @@ typedef struct {
     int counter;
     int end;
     int *array;
+    Semaphore *semaphore;
 } Shared;
 
 /*  make_shared
@@ -97,6 +98,7 @@ Shared *make_shared (int end)
 
     shared->counter = 0;
     shared->end = end;
+    shared->semaphore = make_semaphore(1);
   
     shared->array = check_malloc (shared->end * sizeof(int));
     for (i=0; i<shared->end; i++) {
@@ -157,7 +159,9 @@ void child_code (Shared *shared)
     //printf ("Starting child at counter %d\n", shared->counter);
 
     while (1) {
+            sem_wait(shared->semaphore);
 	    if (shared->counter >= shared->end) {
+                sem_signal(shared->semaphore);
 	        return;
 	    }
 	    shared->array[shared->counter]++;
@@ -166,6 +170,7 @@ void child_code (Shared *shared)
 	    if (shared->counter % 100000 == 0) {
 	        //printf ("%d\n", shared->counter);
 	    }
+            sem_signal(shared->semaphore);
     }
 }
 
