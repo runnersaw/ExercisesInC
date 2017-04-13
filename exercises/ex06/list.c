@@ -107,7 +107,6 @@ int remove_by_value(Node **list, int val) {
     while (current != NULL) {
         // If the element matches, remove it by setting prev->next to the next item
         if (current->val == val) {
-            Node *matched = current;
             prev->next = current->next;
             free(current);
             return;
