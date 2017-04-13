@@ -64,7 +64,9 @@ int pop(Node **list) {
     *list = head->next;
 
     // Return the value.
-    return head->val;
+    int val = head->val;
+    free(head);
+    return val;
 }
 
 
@@ -105,7 +107,9 @@ int remove_by_value(Node **list, int val) {
     while (current != NULL) {
         // If the element matches, remove it by setting prev->next to the next item
         if (current->val == val) {
+            Node *matched = current;
             prev->next = current->next;
+            free(current);
             return;
         }
 
@@ -124,6 +128,9 @@ int remove_by_value(Node **list, int val) {
 void reverse(Node **list) {
     // Get first, set first->next = NULL
     Node *prev = *list;
+    if (prev == NULL) {
+        return;
+    }
     Node *current = prev->next;
     prev->next = NULL;
 
