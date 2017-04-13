@@ -1,4 +1,15 @@
 
+/*
+word_count.c
+
+This program will take a file as a command line argument, and print out
+the 50 most common words used in the file as well as how many times that
+word occurred in the file.
+
+Usage: ./word_count text_file.txt
+
+This file uses GLib for string and data structure utilities.
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
