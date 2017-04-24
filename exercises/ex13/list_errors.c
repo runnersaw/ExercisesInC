@@ -41,6 +41,7 @@ int pop(Node **head) {
 
     next_node = (*head)->next;
     retval = (*head)->val;
+    free(*head);
     *head = next_node;
 
     return retval;
@@ -59,20 +60,20 @@ int remove_by_value(Node **head, int val) {
     Node *victim;
 
     if (node == NULL) {
-	return 0;
+        return 0;
     }
 
     if (node->val == val) {
-	pop(head);
-	return 1;
+        pop(head);
+        return 1;
     }
 
     for(; node->next != NULL; node = node->next) {
-	if (node->next->val == val) {
-	    victim = node->next;
-	    node->next = victim->next;
-	    return 1;
-	}
+        if (node->next->val == val) {
+            victim = node->next;
+            node->next = victim->next;
+            return 1;
+        }
     }
     return 0;
 }
@@ -83,18 +84,19 @@ void reverse(Node **head) {
     Node *next, *temp;
 
     if (node == NULL || node->next == NULL) {
-	return;
+        return;
     }
 
     next = node->next;
     node->next = NULL;
 
     while (next != NULL) {
-	temp = next->next;
-	next->next = node;
-	node = next;
-	next = temp;
+        temp = next->next;
+        next->next = node;
+        node = next;
+        next = temp;
     }
+
     *head = node;
 }
 
@@ -107,15 +109,22 @@ int insert_by_index(Node **head, int val, int index) {
     Node *node = *head;
 
     if (index == 0) {
-	push(head, val);
-	return 0;
+        push(head, val);
+        return 0;
     }
 
     for (i=0; i<index-1; i++) {
-	if (node == NULL) return -1;
-	node = node->next;
+        if (node == NULL) {
+            return -1;
+        }
+
+        node = node->next;
     }
-    if (node == NULL) return -1;
+
+    if (node == NULL) {
+        return -1;
+    }
+
     node->next = make_node(val, node->next);
     return 0;
 }
@@ -133,24 +142,35 @@ Node *make_something() {
     return node3;
 }
 
+void free_list(Node **list) {
+    Node *head = *list;
+    while (head != NULL) {
+        Node *prev = head;
+        head = prev->next;
+        free(prev);
+    }
+    *list = NULL;
+}
+
 int main() {
     // make a list of even numbers
-    Node *test_list = make_node(2, NULL);
-    test_list->next = make_node(4, NULL);
-    test_list->next->next = make_node(6, NULL);
+    Node **list = (Node **)malloc(sizeof(Node **));
+    *list = make_node(2, NULL);
+    (*list)->next = make_node(4, NULL);
+    (*list)->next->next = make_node(6, NULL);
 
     // insert the odd numbers
-    insert_by_index(&test_list, 1, 0);
-    insert_by_index(&test_list, 3, 2);
-    insert_by_index(&test_list, 5, 4);
-    insert_by_index(&test_list, 7, 6);
+    insert_by_index(list, 1, 0);
+    insert_by_index(list, 3, 2);
+    insert_by_index(list, 5, 4);
+    insert_by_index(list, 7, 6);
 
     // this index is out of bounds; should return -1
-    int res = insert_by_index(&test_list, 9, 8);
+    int res = insert_by_index(list, 9, 8);
     assert(res == -1);
 
-    printf("test_list\n");
-    print_list(test_list);
+    printf("list\n");
+    print_list(*list);
 
     // make an empty list
     printf("empty\n");
@@ -159,9 +179,13 @@ int main() {
     // add an element to the empty list
     insert_by_index(&empty, 1, 0);
     print_list(empty);
+    free_list(&empty);
 
     Node *something = make_something();
-    free(something);
+    free_list(&something);
+
+    free_list(list);
+    free(list);
 
     return 0;
 }

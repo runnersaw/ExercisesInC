@@ -23,36 +23,36 @@ int read_element(int *array, int index) {
 
 int main ()
 {
-    int never_allocated;
-    int *free_twice = malloc (sizeof (int));
-    int *use_after_free = malloc (sizeof (int));
-    int *never_free = malloc (sizeof (int));
+    int *allocated = malloc(sizeof(int));
+    int *free_once = malloc (sizeof (int));
+    int *use_before_free = malloc (sizeof (int));
+    int *definitely_freed = malloc (sizeof (int));
     int array1[100];
     int *array2 = malloc (100 * sizeof (int));
 
     // valgrind does not bounds-check static arrays
-    read_element(array1, -1);
-    read_element(array1, 100);
+    read_element(array1, 0);
+    read_element(array1, 99);
 
     // but it does bounds-check dynamic arrays
-    read_element(array2, -1);
-    read_element(array2, 100);
+    read_element(array2, 0);
+    read_element(array2, 99);
 
     // and it catches use after free
-    free(use_after_free);
-    *use_after_free = 17;
+    *use_before_free = 17;
+    free(use_before_free);
     
     // never_free is definitely lost
-    *never_free = 17;
+    *definitely_freed = 17;
+    free(definitely_freed);
 
     // the following line would generate a warning
-    // free(&never_allocated);
+    free(array2);
 
     // but this one doesn't
-    free_anything(&never_allocated);
+    free_anything(allocated);
     
-    free(free_twice);
-    free(free_twice);
+    free(free_once);
 
     return 0;
 }

@@ -92,12 +92,15 @@ void push(Node **list, int val) {
 int remove_by_value(Node **list, int val) {
     Node *current = *list;
 
-    // If only one element, if it matches, remove it, otherwise nothing happens
-    if (current->next == NULL) {
-        if (current->val == val) {
-            *list = NULL;
-        }
+    if (current == NULL) {
         return;
+    }
+
+    // If first matches, update list
+    if (current->val == val) {
+        *list = current->next;
+        free(current);
+        return
     }
 
     Node *prev = current;
